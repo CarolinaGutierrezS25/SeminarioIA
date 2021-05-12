@@ -1,4 +1,4 @@
-package examples.Equation;
+//package examples.Maxones;
 
 import java.util.Arrays;
 import java.util.Comparator;

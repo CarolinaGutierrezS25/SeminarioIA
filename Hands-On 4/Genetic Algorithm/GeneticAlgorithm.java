@@ -1,20 +1,16 @@
-package examples.Equation;
-
-import java.util.Random;
+//package examples.Maxones;
 
 public class GeneticAlgorithm {
     private int populationSize;
     private double mutationRate;
     private double crossoverRate;
     private int elitismCount;
-    private int target;
 
-    public GeneticAlgorithm(int populationSize, double mutationRate, double crossoverRate, int elitismCount, int target) {
+    public GeneticAlgorithm(int populationSize, double mutationRate, double crossoverRate, int elitismCount) {
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
         this.crossoverRate = crossoverRate;
         this.elitismCount = elitismCount;
-        this.target = target;
     }
 
     public Population initPopulation(int chromosomeLength) {
@@ -23,9 +19,18 @@ public class GeneticAlgorithm {
     }
 
     public double calcFitness(Individual individual) {
-        int equationResult = individual.evaluate();
-        double fitness = 100 - Math.abs(equationResult - this.target);
+        int correctGenes = 0;
+
+        for (int geneIndex = 0; geneIndex < individual.getChromosomeLength(); geneIndex++) {
+            if (individual.getGene(geneIndex) == 1) {
+                correctGenes += 1;
+            }            
+        }
+
+        double fitness = (double) correctGenes / individual.getChromosomeLength();
+
         individual.setFitness(fitness);
+
         return fitness;
     }
 
@@ -41,7 +46,7 @@ public class GeneticAlgorithm {
 
     public boolean isTerminationConditionMet(Population population) {
         for(Individual individual : population.getIndividuals()) {
-            if (individual.getFitness() == 100) {
+            if (individual.getFitness() == 1) {
                 return true;
             }
         }
@@ -95,15 +100,17 @@ public class GeneticAlgorithm {
 
     public Population mutatePopulation(Population population) {
         Population newPopulation = new Population(this.populationSize);
-        Random rand = new Random();
 
         for (int populationIndex = 0; populationIndex < population.size(); populationIndex ++) {
             Individual individual = population.getFittest(populationIndex);
 
             for (int geneIndex = 0; geneIndex < individual.getChromosomeLength(); geneIndex++) {            
                 if (populationIndex > this.elitismCount) {
-                    if (this.mutationRate > Math.random()) {                        
-                        int newGene =  rand.nextInt((9 - 1) + 1) + 1;
+                    if (this.mutationRate > Math.random()) {
+                        int newGene = 1;
+                        if (individual.getGene(geneIndex) == 1) {
+                            newGene = 0;
+                        }
                         individual.setGene(geneIndex, newGene);
                     }
                 }
