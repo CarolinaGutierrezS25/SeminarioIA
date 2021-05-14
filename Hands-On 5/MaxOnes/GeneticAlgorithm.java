@@ -1,4 +1,4 @@
-//package examples.Maxones;
+package examples.Maxones;
 
 public class GeneticAlgorithm {
     private int populationSize;
